@@ -38,7 +38,7 @@ public abstract class AbstractInvseeManager implements InvseeManager {
         if (fp == null) {
             return false;
         }
-        if (!viewer.isOp() && !fp.isCreatedBy(viewer)) {
+        if (!viewer.isOp()) {
             return false;
         }
         var view = this.openInventory(viewer, whom);
@@ -62,7 +62,11 @@ public abstract class AbstractInvseeManager implements InvseeManager {
             return;
         }
 
-        this.invsee(event.getPlayer(), whom);   // fakeplayer check here
+        if (manager.isNotFake(whom)) {
+            return;
+        }
+        event.setCancelled(true);
+        this.invsee(event.getPlayer(), whom);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
