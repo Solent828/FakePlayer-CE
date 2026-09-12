@@ -85,8 +85,25 @@ public class SavedBotService implements Listener {
         return manager.spawnAsync(operator, saved.name(), saved.location().clone(), FakeplayerTicker.NON_REMOVE_AT)
                 .thenApply(player -> {
                     Bukkit.getScheduler().runTask(Main.getInstance(), () -> restore(player));
+                    reapplySkinsRestorerSkin(player);
                     return player;
                 });
+    }
+
+    /**
+     * FakePlayer applies its default skin during login, which can overwrite a
+     * skin previously assigned to this UUID by SkinsRestorer. Reapply the
+     * stored SkinsRestorer skin after the fake player has completely joined.
+     */
+    private void reapplySkinsRestorerSkin(@NotNull Player bot) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
+            return;
+        }
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            if (bot.isOnline()) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "sr applyskin " + bot.getName());
+            }
+        }, 10L);
     }
 
     public synchronized boolean despawn(@NotNull SavedBot saved) {
