@@ -9,8 +9,10 @@ depend:
 
 softdepend:
   - Essentials
+  - DeluxeTags
   - OpenInv
   - PlaceholderAPI
+  - SkinsRestorer
 
 permissions:
   fakeplayer.command.spawn:
@@ -90,6 +92,8 @@ permissions:
     description: 'Allow player to run /fp hold'
   fakeplayer.command.cmd:
     description: 'Allow player to run /fp cmd'
+  fakeplayer.command.say:
+    description: 'Allow player to run /fp say'
   fakeplayer.config.replenish:
     description: 'Allow player to configure fake players can replenish'
   fakeplayer.config.replenish.chest:
@@ -146,6 +150,7 @@ permissions:
       - fakeplayer.command.wakeup
       - fakeplayer.command.hold
       - fakeplayer.command.stop
+      - fakeplayer.command.say
       - fakeplayer.config.replenish
       - fakeplayer.config.replenish.chest
       - fakeplayer.config.autofish
