@@ -19,6 +19,8 @@ import io.github.hello09x.fakeplayer.core.manager.FakeplayerManager;
 import io.github.hello09x.fakeplayer.core.manager.FakeplayerReplenishManager;
 import io.github.hello09x.fakeplayer.core.manager.WildFakeplayerManager;
 import io.github.hello09x.fakeplayer.core.manager.invsee.InvseeManager;
+import io.github.hello09x.fakeplayer.core.manager.saved.SavedBotMenu;
+import io.github.hello09x.fakeplayer.core.manager.saved.SavedBotService;
 import io.github.hello09x.fakeplayer.core.placeholder.FakeplayerPlaceholderExpansion;
 import io.github.hello09x.fakeplayer.core.repository.UsedIdRepository;
 import io.github.hello09x.fakeplayer.core.util.update.UpdateChecker;
@@ -36,6 +38,7 @@ public final class Main extends JavaPlugin {
     private Injector injector;
     private FakeplayerManager fakeplayerManager;
     private UsedIdRepository usedIdRepository;
+    private SavedBotService savedBotService;
     private boolean stopped;
 
     private long loadAt;
@@ -59,6 +62,7 @@ public final class Main extends JavaPlugin {
         );
         fakeplayerManager = injector.getInstance(FakeplayerManager.class);
         usedIdRepository = injector.getInstance(UsedIdRepository.class);
+        savedBotService = injector.getInstance(SavedBotService.class);
         getServer().getPluginManager().registerEvents(injector.getInstance(FakeplayerListener.class), this);
 
         injector.getInstance(CommandRegistry.class).register();
@@ -75,6 +79,8 @@ public final class Main extends JavaPlugin {
             manager.registerEvents(injector.getInstance(FakeplayerAutofishManager.class), this);
             manager.registerEvents(injector.getInstance(FakeplayerReplenishManager.class), this);
             manager.registerEvents(injector.getInstance(InvseeManager.class), this);
+            manager.registerEvents(savedBotService, this);
+            manager.registerEvents(injector.getInstance(SavedBotMenu.class), this);
         }
 
         {
@@ -136,6 +142,10 @@ public final class Main extends JavaPlugin {
         {
             Exceptions.suppress(this, () -> CommandAPI.unregister("fp", true));
             Exceptions.suppress(this, () -> CommandAPI.unregister("fakeplayer", true));
+        }
+        if (savedBotService != null) {
+            Exceptions.suppress(this, savedBotService::saveAllOnline);
+            savedBotService = null;
         }
         if (fakeplayerManager != null) {
             Exceptions.suppress(this, fakeplayerManager::onDisable);
