@@ -377,7 +377,17 @@ public class CommandRegistry {
                                         command("right")
                                                 .withShortDescription("fakeplayer.command.move.right.description")
                                                 .withOptionalArguments(fakeplayer("name"))
-                                                .executes(moveCommand.move(0, -1))
+                                                .executes(moveCommand.move(0, -1)),
+                                        command("start")
+                                                .withSubcommands(
+                                                        command("forward").withOptionalArguments(fakeplayer("name")).executes(moveCommand.start(1, 0)),
+                                                        command("backward").withOptionalArguments(fakeplayer("name")).executes(moveCommand.start(-1, 0)),
+                                                        command("left").withOptionalArguments(fakeplayer("name")).executes(moveCommand.start(0, 1)),
+                                                        command("right").withOptionalArguments(fakeplayer("name")).executes(moveCommand.start(0, -1))
+                                                ),
+                                        command("stop")
+                                                .withOptionalArguments(fakeplayer("name"))
+                                                .executes(moveCommand::stop)
                                 )
                                 .executes(moveCommand.move(1, 0)),
 
