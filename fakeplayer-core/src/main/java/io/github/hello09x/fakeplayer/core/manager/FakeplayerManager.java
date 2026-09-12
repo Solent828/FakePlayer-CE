@@ -59,6 +59,7 @@ public class FakeplayerManager {
     private final NameManager nameManager;
     private final FakeplayerList playerList;
     private final FakeplayerFeatureManager featureManager;
+    private final EssentialsAfkManager essentialsAfkManager;
     private final NMSBridge nms;
     private final FakeplayerConfig config;
     private final ScheduledExecutorService lagMonitor;
@@ -66,10 +67,11 @@ public class FakeplayerManager {
     private int laglevel=0;
 
     @Inject
-    public FakeplayerManager(NameManager nameManager, FakeplayerList playerList, FakeplayerFeatureManager featureManager, NMSBridge nms, FakeplayerConfig config) {
+    public FakeplayerManager(NameManager nameManager, FakeplayerList playerList, FakeplayerFeatureManager featureManager, EssentialsAfkManager essentialsAfkManager, NMSBridge nms, FakeplayerConfig config) {
         this.nameManager = nameManager;
         this.playerList = playerList;
         this.featureManager = featureManager;
+        this.essentialsAfkManager = essentialsAfkManager;
         this.nms = nms;
         this.config = config;
 
@@ -176,7 +178,10 @@ public class FakeplayerManager {
                     );
                 }))
                 .thenCompose(fp::spawnAsync)
-                .thenApply(ignored -> target);
+                .thenApply(ignored -> {
+                    essentialsAfkManager.schedule(target);
+                    return target;
+                });
 
         return future.<CompletableFuture<Player>>handle((player, error) -> {
             if (error == null) {
