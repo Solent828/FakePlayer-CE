@@ -80,6 +80,8 @@ public class CommandRegistry {
     private DebugCommand debugCommand;
     @Inject
     private StopCommand stopCommand;
+    @Inject
+    private SavedBotCommand savedBotCommand;
 
     @Inject
     private SayCommand sayCommand;
@@ -120,6 +122,14 @@ public class CommandRegistry {
                                         world("world").withPermission(Permission.spawnLocation),
                                         location("location").withPermission(Permission.spawnLocation))
                                 .executes(spawnCommand::spawn),
+                        command("save")
+                                .withPermission(CommandPermission.OP)
+                                .withRequirement(CommandSupports::hasFakeplayer)
+                                .withOptionalArguments(fakeplayer("name"))
+                                .executes(savedBotCommand::save),
+                        command("gui")
+                                .withPermission(CommandPermission.OP)
+                                .executesPlayer(savedBotCommand::gui),
                         command("kill")
                                 .withPermission(Permission.kill)
                                 .withShortDescription("fakeplayer.command.kill.description")
